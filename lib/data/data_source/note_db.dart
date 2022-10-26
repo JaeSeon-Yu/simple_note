@@ -4,10 +4,10 @@ import 'dart:core';
 import 'package:simple_note/domain/model/note.dart';
 import 'package:sqflite/sqflite.dart';
 
-class NoteDB {
+class NoteDBHelper {
   Database db;
 
-  NoteDB(this.db);
+  NoteDBHelper(this.db);
 
   Future<Note?> getNoteById(int id) async {
     // select * from note where id = :id

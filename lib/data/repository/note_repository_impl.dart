@@ -3,7 +3,7 @@ import 'package:simple_note/domain/model/note.dart';
 import 'package:simple_note/domain/repository/note_repository.dart';
 
 class NoteRepositoryImpl extends NoteRepository{
-  final NoteDB db;
+  final NoteDBHelper db;
 
   NoteRepositoryImpl(this.db);
 

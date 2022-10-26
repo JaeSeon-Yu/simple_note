@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider:
   sqflite:
+  sqflite_common_ffi:
   json_annotation:
   freezed_annotation:
 
