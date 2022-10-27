@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:simple_note/presentation/notes/notes_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_note/di/provider_setup.dart';
+import 'package:simple_note/routes.dart';
 import 'package:simple_note/ui/colors.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final providers = await getProviders();
+
+  runApp(MultiProvider(
+   providers: providers,
+   child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -13,12 +21,23 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: '',
       theme: ThemeData(
         primaryColor: Colors.white,
-        backgroundColor: darkGray,
+        canvasColor: darkGray,
+        floatingActionButtonTheme:
+            Theme.of(context).floatingActionButtonTheme.copyWith(
+                  backgroundColor: Colors.white,
+                  foregroundColor: darkGray,
+                ),
+        appBarTheme: Theme.of(context).appBarTheme.copyWith(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
       ),
-      home: const NotesScreen(),
+      initialRoute: Routes.notesScreen,
+      onGenerateRoute: Pages.generateRoute, //const NotesScreen(),
     );
   }
 }
