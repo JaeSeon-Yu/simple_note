@@ -1,45 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:simple_note/domain/model/note.dart';
-import 'package:simple_note/domain/repository/note_repository.dart';
+import 'package:simple_note/domain/use_case/use_cases.dart';
 import 'package:simple_note/presentation/notes/notes_event.dart';
 import 'package:simple_note/presentation/notes/notes_state.dart';
 
 class NotesViewModel with ChangeNotifier {
-  NoteRepository repository;
+  final UseCases useCases;
 
   NotesState _state = NotesState(notes: []);
+
   NotesState get state => _state;
 
   Note? _recentlyDeletedNote;
 
-  NotesViewModel(this.repository){
+  NotesViewModel(this.useCases) {
     _loadNotes();
   }
 
   Future<void> onEvent(NotesEvent notesEvent) async {
     notesEvent.when(
       loadNotes: _loadNotes,
-      deleteNote: _deleteNote,
+      removeNote: _removeNote,
       restoreNote: _restoreNote,
     );
   }
 
+  Future<void> _loadNotes() async {
+    List<Note> notes = await useCases.getNotes();
+    notes.sort((a, b) => -a.timeStamp.compareTo(b.timeStamp));
+    _state = _state.copyWith(notes: notes);
 
-  Future<void> _loadNotes()async {
-    _state = _state.copyWith(notes: await repository.getNotes());
     notifyListeners();
   }
 
-  Future<void> _deleteNote(Note note)async {
-    await repository.deleteNote(note);
+  Future<void> _removeNote(Note note) async {
+    await useCases.deleteNote(note);
     _recentlyDeletedNote = note;
 
     await _loadNotes();
   }
 
-  Future<void> _restoreNote()async {
-    if(_recentlyDeletedNote != null){
-      await repository.insertNote(_recentlyDeletedNote!);
+  Future<void> _restoreNote() async {
+    if (_recentlyDeletedNote != null) {
+      await useCases.insertNote(_recentlyDeletedNote!);
       _recentlyDeletedNote = null;
       _loadNotes();
     }

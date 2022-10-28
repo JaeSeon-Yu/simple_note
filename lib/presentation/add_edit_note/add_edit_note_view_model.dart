@@ -15,7 +15,6 @@ class AddEditNoteViewModel with ChangeNotifier {
   int get color => _color;
 
   final _eventController = StreamController<AddEditNoteUIEvent>.broadcast();
-
   Stream<AddEditNoteUIEvent> get eventStream => _eventController.stream;
 
   AddEditNoteViewModel(this.repository);
@@ -33,6 +32,11 @@ class AddEditNoteViewModel with ChangeNotifier {
   }
 
   Future<void> _saveNote(int? id, String title, String content) async {
+    if(title.isEmpty || content.isEmpty){
+      _eventController.add(const AddEditNoteUIEvent.showSnackBar('제목과 내용을 입력해주세요.'));
+      return;
+    }
+
     Note note = Note(
       id: id,
       title: title,

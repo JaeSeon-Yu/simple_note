@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_note/domain/model/note.dart';
 import 'package:simple_note/presentation/add_edit_note/add_edit_note_event.dart';
-import 'package:simple_note/presentation/add_edit_note/add_edit_note_ui_event.dart';
 import 'package:simple_note/presentation/add_edit_note/add_edit_note_view_model.dart';
 import 'package:simple_note/ui/colors.dart';
 
@@ -41,6 +39,9 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
       _streamSubscription = viewModel.eventStream.listen((event) {
         event.when(saveNote: () {
           Navigator.pop(context, true);
+        }, showSnackBar: (String message) {
+          final snackBar = SnackBar(content: Text(message));
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
         });
       });
 
@@ -53,7 +54,6 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
         _contentController.text = note!.content;
         viewModel.onEvent(AddEditNoteEvent.changeColor(note!.color));
       }
-
     });
   }
 
@@ -61,23 +61,16 @@ class _AddEditNoteScreenState extends State<AddEditNoteScreen> {
   Widget build(BuildContext context) {
     final viewModel = context.watch<AddEditNoteViewModel>();
 
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          if (_titleController.text.isEmpty ||
-              _contentController.text.isEmpty) {
-            const snackBar = SnackBar(content: Text('제목이나 내용이 비어 있습니다.'));
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else {
-            viewModel.onEvent(
-              AddEditNoteEvent.saveNote(
-                note?.id,
-                _titleController.text,
-                _contentController.text,
-              ),
-            );
-          }
+          viewModel.onEvent(
+            AddEditNoteEvent.saveNote(
+              note?.id,
+              _titleController.text,
+              _contentController.text,
+            ),
+          );
         },
         child: const Icon(Icons.save),
       ),

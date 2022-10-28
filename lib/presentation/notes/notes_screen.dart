@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_note/presentation/notes/components/note_item.dart';
@@ -55,7 +53,7 @@ class NotesScreen extends StatelessWidget {
                 child: NoteItem(
                   note: note,
                   onDeleteTap: () {
-                    viewModel.onEvent(NotesEvent.deleteNote(note));
+                    viewModel.onEvent(NotesEvent.removeNote(note));
 
                     final snackBar = SnackBar(
                       content: const Text("노트를 삭제했습니다."),
@@ -72,8 +70,6 @@ class NotesScreen extends StatelessWidget {
                 ),
               ),
             )
-            .toList()
-            .reversed
             .toList(),
       ),
     );
