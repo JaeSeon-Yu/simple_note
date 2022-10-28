@@ -12,7 +12,9 @@ class NotesViewModel with ChangeNotifier {
 
   Note? _recentlyDeletedNote;
 
-  NotesViewModel(this.repository);
+  NotesViewModel(this.repository){
+    _loadNotes();
+  }
 
   Future<void> onEvent(NotesEvent notesEvent) async {
     notesEvent.when(
@@ -30,7 +32,6 @@ class NotesViewModel with ChangeNotifier {
 
   Future<void> _deleteNote(Note note)async {
     await repository.deleteNote(note);
-
     _recentlyDeletedNote = note;
 
     await _loadNotes();

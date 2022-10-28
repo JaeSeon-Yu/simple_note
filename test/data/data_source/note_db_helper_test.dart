@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_note/data/data_source/note_db.dart';
 import 'package:simple_note/domain/model/note.dart';
+import 'package:simple_note/ui/colors.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -16,7 +17,7 @@ void main() {
     await noteDBHepler.insertNote(Note(
       title: 'test',
       content: 'test',
-      color: 1,
+      color: lightBlue.value,
       timeStamp: 1,
     ));
 
@@ -27,7 +28,7 @@ void main() {
     //select test
     expect(note.id, 1);
 
-    noteDBHepler.updateNote(note.copyWith(color: 2));
+    noteDBHepler.updateNote(note.copyWith(color: lightBlue.value));
 
     //update test
     expect((await noteDBHepler.getNoteById(1))!.color, 2);

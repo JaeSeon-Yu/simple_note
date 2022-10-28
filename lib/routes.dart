@@ -9,10 +9,17 @@ class Routes {
 
 class Pages {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
+    var argument = settings.arguments;
+
     switch (settings.name) {
       case Routes.addEditNoteScreen:
         {
-          return MaterialPageRoute(builder: (_) => const AddEditNoteScreen());
+          return MaterialPageRoute(
+            builder: (_) => const AddEditNoteScreen(),
+            settings: RouteSettings(
+              arguments: argument,
+            ),
+          );
         }
       case Routes.notesScreen:
         {
@@ -20,7 +27,7 @@ class Pages {
         }
       default:
         {
-          return MaterialPageRoute(builder: (_) => NotesScreen());
+          return null;
         }
     }
   }
