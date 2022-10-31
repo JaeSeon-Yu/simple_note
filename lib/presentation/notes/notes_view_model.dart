@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:simple_note/domain/model/note.dart';
 import 'package:simple_note/domain/use_case/use_cases.dart';
+import 'package:simple_note/domain/util/note_order.dart';
+import 'package:simple_note/domain/util/order_type.dart';
 import 'package:simple_note/presentation/notes/notes_event.dart';
 import 'package:simple_note/presentation/notes/notes_state.dart';
 
 class NotesViewModel with ChangeNotifier {
   final UseCases useCases;
 
-  NotesState _state = NotesState(notes: []);
+  NotesState _state = NotesState(
+    notes: [],
+    noteOrder: const NoteOrder.date(OrderType.descending()),
+    isOrderSectionVisible: false,
+  );
 
   NotesState get state => _state;
 
@@ -22,12 +28,13 @@ class NotesViewModel with ChangeNotifier {
       loadNotes: _loadNotes,
       removeNote: _removeNote,
       restoreNote: _restoreNote,
+      changeOrder: _changeOrder,
+      changeOrderSectionVisible: _changeOrderSectionVisible,
     );
   }
 
   Future<void> _loadNotes() async {
-    List<Note> notes = await useCases.getNotes();
-    notes.sort((a, b) => -a.timeStamp.compareTo(b.timeStamp));
+    List<Note> notes = await useCases.getNotes(_state.noteOrder);
     _state = _state.copyWith(notes: notes);
 
     notifyListeners();
@@ -46,5 +53,20 @@ class NotesViewModel with ChangeNotifier {
       _recentlyDeletedNote = null;
       _loadNotes();
     }
+  }
+
+  Future<void> _changeOrder(NoteOrder noteOrder) async {
+    _state = _state.copyWith(
+      noteOrder: noteOrder,
+    );
+    _loadNotes();
+  }
+
+  Future<void> _changeOrderSectionVisible() async {
+    _state = _state.copyWith(
+      isOrderSectionVisible: !state.isOrderSectionVisible,
+    );
+
+    notifyListeners();
   }
 }

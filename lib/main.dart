@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: '',
       theme: ThemeData(
+        unselectedWidgetColor: Colors.white,
         primaryColor: Colors.white,
         canvasColor: darkGray,
         floatingActionButtonTheme:
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),
+        textTheme: Theme.of(context).textTheme.apply(
+          bodyColor: Colors.white,
+        ),
       ),
       initialRoute: Routes.notesScreen,
       onGenerateRoute: Pages.generateRoute, //const NotesScreen(),
